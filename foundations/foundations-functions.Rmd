@@ -1,0 +1,104 @@
+---
+title: "Functions"
+---
+
+1. __What are the three components of a function?__  
+* Envionment, arguments, and body.
+```{r}
+e <- new.env()
+e$body <- print("Schrodinger's cat")
+e$a <- function(argument){
+  e$body
+  if (argument < 0.5) {
+    print('is dead.')
+  } else {
+    print('is alive.')
+  }
+}
+print('Envionrment e variables:')
+print(ls.str(e))
+arg = runif(1)
+sprintf('Calling function a in environment e with argument %.2f', arg)
+e$a(arg)
+```
+
+2. __What does the following code return?__  
+```{r}
+x <- 10
+f1 <- function(x) {
+  function(y) {
+    y + x + 10
+  }
+}
+f1(1)(100)
+```
+
+3. __How would you more typically write this code?__
+```{r}
+`+`(1, `*`(2, 3))
+```
+* Answer:
+```{r}
+1 + (2* 3)
+```
+
+4. __How could you make this call easier to read?__  
+```{r}
+mean(, TRUE, x = c(1:10, NA))
+```
+* Answer:
+```{r}
+mean(c(1:10, NA), na.rm = TRUE)
+```
+
+5. __Does the following function throw an error when called? Why/why not?__  
+```{r}
+f2 <- function(a, b) {
+  a * 10
+}
+f2(10, stop("This is an error!"))
+```
+
+* No, but we can pass the stop function if we want.
+```{r, eval=FALSE}
+f2 <- function(a, b) {
+  a * 10
+  b
+}
+f2(10, stop("This is an error!"))
+```
+
+6. __What is an infix function? How do you write it? What's a replacement function? How do you write it?__  
+* An infix function combines arguments surrounding it. For example:
+```{r}
+`%blow_up%` <- function(a, b) a**b**a
+print(5 %blow_up% 3)
+```
+* A replacement function can be defined and called as follows:
+```{r}
+# Must name second argument of replacement function "value"
+"PIstep<-" <- function(a, value){
+  a[a > 0.5] <- value
+  a[a <= 0.5] <- 0
+  print(a)
+}
+
+my_list = runif(10)
+PIstep(my_list) <- 3.14
+```
+* `[` and `names` are examples of pre-defined replacement functions
+
+7) __What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?__  
+* Call `on.exit()` at some point (best at start) of function. Stuff inside will be run upon exiting.
+```{r}
+neils_bohr <- function(){
+  on.exit(print('father of QM'))
+  print('A founding')
+}
+neils_bohr()
+```
+
+* My original answer was that deleted files can be removed by triggering "garbage collection"
+```{r}
+gc(verbose = TRUE)
+```
